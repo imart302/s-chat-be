@@ -27,7 +27,7 @@ router.post(
   '/create',
   [
     body('email', 'email not valid').isEmail(),
-    body('username', 'username not valid').isLength({ min: 6 }),
+    body('username', 'username not valid').isLength({ min: 1 }),
     body('password', 'not a valid password').isLength({ min: 6 }),
     validateFields,
     limitUsers,
