@@ -7,7 +7,7 @@ const dbConnection = async () => {
       useUnifiedTopology: true
     });
 
-    console.log('DB Online');
+    
   } catch (error) {
     console.log(error);
     throw new Error('Error on DB Connection');

@@ -6,11 +6,11 @@
 
 // const createUser = async (req = request, res = response) => {
 //   const { email, password, username } = req.body;
-//   console.log('here');
+//   
 
 //   const u = await User.findOne({ email });
 
-//   console.log(u);
+//   
 //   if (u) {
 //     return res.status(400).json({
 //       message: 'email already used',

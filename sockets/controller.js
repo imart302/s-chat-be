@@ -21,13 +21,13 @@ const MessagePayload = JOI.object({
 });
 
 const socketController = async (socket = new Socket(), io = new Server()) => {
-  console.log('New connection ', socket.id);
+  
   const token = socket.handshake.headers['x-token'];
 
   const user = await verifyJWT(token);
 
   if (!user) {
-    console.log('bad socket auth');
+    
     socket.disconnect();
     return;
   }
@@ -37,12 +37,12 @@ const socketController = async (socket = new Socket(), io = new Server()) => {
   await socket.join(user.id);
 
   socket.on('sendMessage', async (payload) => {
-    console.log(payload);
+    
 
     const { error } = MessagePayload.validate(payload);
 
     if(error){
-      console.log('Message Payload Validation Error');
+      
       return socket.emit('messageErrorSchema', error.message);
     }
 
@@ -67,7 +67,7 @@ const socketController = async (socket = new Socket(), io = new Server()) => {
       io.to([...Array.from(receiverRooms), user.id]).emit('incomingMessage', newMessage);
     } else {
       //Not connected user send only to me
-      console.log('sending only to me');
+      
       socket.emit('incomingMessage', newMessage);
     }
   });
