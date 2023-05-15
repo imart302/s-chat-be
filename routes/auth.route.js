@@ -1,7 +1,12 @@
 const express = require('express');
 const { body } = require('express-validator');
 const validateFields = require('../middlewares/validateFields.middleware');
-const { createUser, login, refreshToken } = require('../controllers/auth.controller');
+const {
+  createUser,
+  login,
+  refreshToken,
+  googleSingIn,
+} = require('../controllers/auth.controller');
 const limitUsers = require('../middlewares/limitUsers.middleware');
 
 const router = express.Router();
@@ -33,7 +38,14 @@ router.post(
 //REFRESH TOKEN HTTP CONTROLLER
 router.get('/', refreshToken);
 
-router.post('/google', (req, res) => {});
+router.post(
+  '/google',
+  [
+    body('access_token', 'google token is required').isLength({ min: 6 }),
+    validateFields,
+  ],
+  googleSingIn
+);
 
 router.delete('/:id', (req, res) => {});
 

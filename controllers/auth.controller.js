@@ -4,6 +4,7 @@ const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const { createJWT, verifyJWT } = require('../utils/jwt.utils');
 const { v4: uuid } = require('uuid');
+const { default: axios } = require('axios');
 
 const createUser = async (req = request, res = response) => {
   const { email, password, username } = req.body;
@@ -106,8 +107,64 @@ const refreshToken = async (req = request, res = response) => {
   });
 };
 
+const googleSingIn = async (req = request, res = response) => {
+  try {
+    const { access_token } = req.body;
+
+    const { data: profile } = await axios.get(process.env.GOOGLE_PROFILE_URL, {
+      params: {
+        access_token,
+      },
+    });
+
+    if (profile) {
+      let user = await User.findOne({ email: profile.email });
+
+      if (!user) {
+        user = new User({
+          email: profile.email,
+          password: '@google',
+          username: profile.name,
+          google: true,
+          img: profile.picture,
+        });
+
+        await user.save();
+      }
+
+      const token = await createJWT({
+        username: user.username,
+        id: user.id,
+        email: user.email,
+        createdAt: new Date().toISOString(),
+        token_id: uuid(),
+      });
+
+      return res.status(200).json({
+        status: 'ok',
+        token,
+        user: {
+          username: user.username,
+          email: user.email,
+          id: user.id,
+        },
+      });
+    } else {
+      return res.status(400).json({
+        message: 'Error with google access',
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      error,
+    });
+  }
+};
+
 module.exports = {
   createUser,
   login,
   refreshToken,
+  googleSingIn,
 };

@@ -6,6 +6,18 @@ const createMessage = async (
   receiver,
   sentAt = new Date()
 ) => {
+
+  const count = await MessageModel.count({
+    $or: [
+      { sender, receiver },
+      { sender: receiver, receiver: sender },
+    ],
+  });
+
+  if(count >= (process.env.MAX_MESSAGES_PER_CONVERSATION ?? 50)){
+    await deleteOlderMessage(MessageModel, sender, receiver);
+  }
+
   const message = new MessageModel({
     text,
     sender,
@@ -46,13 +58,18 @@ const countMessages = async (MessageModel, userId) => {
   return count;
 };
 
-const deleteOlderMessage = async (MessageModel, userId) => {
-  const messages = await MessageModel.find({ sender: userId })
-    .sort({ sentAt: 'desc' })
+const deleteOlderMessage = async (MessageModel, sender, receiver) => {
+  const messages = await MessageModel.find({
+    $or: [
+      { sender, receiver },
+      { sender: receiver, receiver: sender },
+    ],
+  })
+    .sort({ sentAt: 'asc' })
     .limit(1);
 
   if (messages) {
-    await MessageModel.deleteOne({ id: messages[0].id });
+    await MessageModel.deleteOne({ _id: messages[0].id });
   }
 };
 
