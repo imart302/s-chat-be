@@ -16,7 +16,7 @@ router.post(
   '/',
   [
     body('email', 'email not valid').isEmail(),
-    body('password', 'not a valid password').isLength({ min: 6 }),
+    body('password', 'not a valid password').isLength({ min: 6, max: 40 }),
     validateFields,
   ],
   login
@@ -27,8 +27,8 @@ router.post(
   '/create',
   [
     body('email', 'email not valid').isEmail(),
-    body('username', 'username not valid').isLength({ min: 1 }),
-    body('password', 'not a valid password').isLength({ min: 6 }),
+    body('username', 'username not valid').isLength({ min: 1, max: 25 }),
+    body('password', 'not a valid password').isLength({ min: 6, max: 40 }),
     validateFields,
     limitUsers,
   ],
