@@ -41,7 +41,7 @@ const addContact = async (req = request, res = response) => {
     });
 
     const contactRepl = new Contact({
-      email,
+      email: user.email,
       userId: userContact.id,
       contactId: user.id,
       contactUsername: user.username,
