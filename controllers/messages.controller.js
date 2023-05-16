@@ -25,13 +25,14 @@ const queryMessages = async (req = request, res = response) => {
       user.id
     );
 
+    const pages = count % pageSizeN  === 0 ? Math.floor(count / pageSize) : Math.floor(count / pageSize) + 1;
     return res.json({
       pagination: {
         currentPage: pageN,
-        nextPage: pageN === (Math.floor(count / pageSizeN) - 1) ? null : pageN + 1,
+        nextPage: pageN === (pages - 1) ? null : pageN + 1,
         prevPage: pageN === 0 ? null : pageN - 1,
         totalCount: count,
-        pages: count % pageSizeN  === 0 ? Math.floor(count / pageSize) : Math.floor(count / pageSize) + 1,
+        pages,
         pageSize: pageSizeN
       },
       contact,
