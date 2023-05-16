@@ -29,8 +29,8 @@ const queryMessages = async (req = request, res = response) => {
     return res.json({
       pagination: {
         currentPage: pageN,
-        nextPage: pageN <= (pages - 1) ? null : pageN + 1,
-        prevPage: pageN === 0 ? null : pageN - 1,
+        nextPage: pages === 0 ? null : (pageN === (pages - 1) ? null : pageN + 1),
+        prevPage: pages === 0 ? null : (pageN === 0 ? null : pageN - 1),
         totalCount: count,
         pages,
         pageSize: pageSizeN
