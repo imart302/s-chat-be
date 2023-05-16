@@ -21,6 +21,11 @@ const ContactSchema = mongoose.Schema({
   contactUsername: {
     type: String,
     required: true,
+  },
+
+  accepted: {
+    type: Boolean,
+    default: false,
   }
 
 });

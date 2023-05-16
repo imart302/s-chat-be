@@ -40,7 +40,15 @@ const addContact = async (req = request, res = response) => {
       contactUsername: userContact.username,
     });
 
+    const contactRepl = new Contact({
+      email,
+      userId: userContact.id,
+      contactId: user.id,
+      contactUsername: userContact.username,
+    });
+
     await contact.save();
+    await contactRepl.save();
 
     return res.status(201).json({
       contact: {
