@@ -74,16 +74,21 @@ const getContacts = async (req = request, res = response) => {
       userId: user.id,
     });
 
+    const emails = contacts.map(contact => contact.email);
+    const userContacts = await User.find({email: [...emails]});
+
     return res.status(200).json({
       contacts: contacts.map(contact => ({
         email: contact.email,
         userId: contact.userId,
         contactId: contact.contactId,
         username: contact.contactUsername,
-        id: contact.id
+        id: contact.id,
+        img: userContacts.find(uC => uC.email === contact.email)?.img,
       })),
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: error,
     });
@@ -92,18 +97,34 @@ const getContacts = async (req = request, res = response) => {
 
 const deleteContact = async (req = request, res = response) => {
   try {
-    const { email } = req.body;
+    const { id } = req.params;
     const user = req.user;
 
-    const op = await Contact.deleteOne({
-      email,
-      userId: user.id,
+    const contact = await Contact.findById(id);
+    if(!contact){
+      return res.status(404).json({
+        message: 'Contact not found'
+      });
+    }
+
+    const op = await Contact.deleteMany({
+      $or: [
+        {
+          email: contact.email,
+          userId: user.id,
+        },
+        {
+          email: user.email,
+          userId: contact.contactId,
+        }
+      ]
     });
 
     return res.status(200).json({
       deleted: op.deletedCount,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       message: error,
     });

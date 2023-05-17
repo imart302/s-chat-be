@@ -24,8 +24,7 @@ router.get('/', getContacts);
 
 //Delete contacts
 router.delete(
-  '/',
-  [body('email', 'email is required').isEmail(), validateFields],
+  '/:id',
   deleteContact
 );
 
