@@ -74,6 +74,7 @@ const login = async (req = request, res = response) => {
       username: user.username,
       email: user.email,
       id: user.id,
+      img: user.img,
     },
   });
 };
@@ -87,6 +88,8 @@ const refreshToken = async (req = request, res = response) => {
       message: 'Invalid token',
     });
   }
+
+  const user = await User.findById(v.id);
 
   const newToken = await createJWT({
     username: v.username,
@@ -103,6 +106,7 @@ const refreshToken = async (req = request, res = response) => {
       username: v.username,
       email: v.email,
       id: v.id,
+      img: user.img,
     },
   });
 };
@@ -147,6 +151,7 @@ const googleSingIn = async (req = request, res = response) => {
           username: user.username,
           email: user.email,
           id: user.id,
+          img: user.img,
         },
       });
     } else {
