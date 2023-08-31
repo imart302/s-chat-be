@@ -12,7 +12,7 @@ This has the services of a chat application. It was used:
 ## Setup
 
 Configure your env variables as in env.example, It requires a mongodb server or Atlas
-Also a cloudinary bucket and setup an Google app for OAuth.
+Also a cloudinary bucket and setup a Google app for OAuth.
 
 ## Dev
 
